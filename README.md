@@ -26,6 +26,9 @@ go install github.com/jaytrairat/init-case@latest
 init-case -c "F01-66" -e "EV01" -e "EV02"
 ```
 
+## Example
+![Example](https://raw.githubusercontent.com/jaytrairat/init-case/main/assets/demo.gif)
+
 ## Result
 ```bash
     F01-66_NEWCASE/
