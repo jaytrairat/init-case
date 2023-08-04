@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	caseArg     string
-	evidenceArg string
+	caseName     string
+	evidenceList []string
 )
 
 var rootCmd = &cobra.Command{
@@ -25,18 +25,15 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		currentPath, _ := os.Getwd()
 
-		if caseArg == "" {
+		if caseName == "" {
 			timestamp := time.Now().Format("20060102150405")
-			caseArg = fmt.Sprintf("%s_NEWCASE", timestamp)
+			caseName = fmt.Sprintf("%s_NEWCASE", timestamp)
 		}
 
-		evidenceList := []string{"EV00", "EV01"}
-		if evidenceArg != "" {
-			evidenceList = strings.Split("", evidenceArg)
-		}
+		// evidenceList = []string{"EV01"}
 
-		createFolder(currentPath, caseArg, evidenceList)
-		fmt.Println("Successfully created case " + caseArg + " folder with evidence " + evidenceArg + " and sub-folders.")
+		createFolder(currentPath, caseName, evidenceList)
+		fmt.Println("Successfully created case (" + caseName + ") folder with evidence (" + strings.Join(evidenceList, ", ") + ") and sub-folders.")
 	},
 }
 
@@ -64,7 +61,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&caseArg, "case", "c", "", "Name of the case :: F01-66")
-	rootCmd.Flags().StringVarP(&evidenceArg, "evidence", "e", "", "List of evidence :: EV01 EV02")
-
+	rootCmd.Flags().StringVarP(&caseName, "case", "c", "", "Name of the case :: F01-66")
+	rootCmd.Flags().StringSliceVarP(&evidenceList, "evidence", "e", []string{}, "List of evidence :: EV01 EV02")
 }
