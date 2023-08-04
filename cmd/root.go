@@ -30,7 +30,9 @@ var rootCmd = &cobra.Command{
 			caseName = fmt.Sprintf("%s_NEWCASE", timestamp)
 		}
 
-		// evidenceList = []string{"EV01"}
+		if len(evidenceList) == 0 {
+			evidenceList = []string{"EVIDENCE"}
+		}
 
 		createFolder(currentPath, caseName, evidenceList)
 		fmt.Println("Successfully created case (" + caseName + ") folder with evidence (" + strings.Join(evidenceList, ", ") + ") and sub-folders.")
