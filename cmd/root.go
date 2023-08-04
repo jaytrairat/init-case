@@ -1,51 +1,70 @@
 /*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2023 NAME HERE jay.trairat@gmail.com
 */
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
+var (
+	caseArg     string
+	evidenceArg string
+)
 
-
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "init-case",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "",
+	Long:  "",
+	Run: func(cmd *cobra.Command, args []string) {
+		currentPath, _ := os.Getwd()
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+		if caseArg == "" {
+			timestamp := time.Now().Format("20060102150405")
+			caseArg = fmt.Sprintf("%s_NEWCASE", timestamp)
+		}
+
+		evidenceList := []string{"EV00", "EV01"}
+		if evidenceArg != "" {
+			evidenceList = strings.Split("", evidenceArg)
+		}
+
+		createFolder(currentPath, caseArg, evidenceList)
+		fmt.Println("Successfully created case " + caseArg + " folder with evidence " + evidenceArg + " and sub-folders.")
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+func createFolder(basePath string, caseName string, evidenceList []string) error {
+	evidenceStructure := []string{"Documents", "Extracts", "Pictures", "Videos", "Reports", "CaseFiles"}
+	casePath := filepath.Join(basePath, caseName)
+
+	os.MkdirAll(casePath, 0755)
+	for _, dir := range evidenceStructure {
+		structureFolder := filepath.Join(casePath, dir)
+		os.MkdirAll(structureFolder, 0755)
+		for _, subDir := range evidenceList {
+			os.MkdirAll(filepath.Join(structureFolder, subDir), 0755)
+		}
+	}
+	return nil
+}
+
 func Execute() {
 	err := rootCmd.Execute()
+
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	rootCmd.Flags().StringVarP(&caseArg, "case", "c", "", "Name of the case :: F01-66")
+	rootCmd.Flags().StringVarP(&evidenceArg, "evidence", "e", "", "List of evidence :: EV01 EV02")
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.init-case.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
