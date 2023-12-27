@@ -2,52 +2,47 @@
 # init-case
 A command line for creating a case folder and evidence folders.
 
-
-The `--case` argument is optional and will default to `YYYYMMDDHHmmss_NEWCASE` if not provided. 
-
-The `--evidence` argument is also optional and will default to `EVIDENCE` if not provided.
-
 The script will create the parent folder and sub-folder for evidence, and then create the following sub-folders inside the evidence folder:
 
 - Documents
-- Extracts
+- Images&Extractions
 - Pictures
-- Videos
 - Reports
-- CaseFiles
+- Request
+- Videos
 
 ## Installation
 ```bash
-go install github.com/jaytrairat/init-case@latest
+go install github.com/jaytrairat/init-case@V0.0.3
 ```
 
 ## Usage
 ```bash
-init-case -c "F01-66" -e "EV01" -e "EV02"
+init-case -c 1 -e 1 -e 2 -y 2566
 ```
 
-## Example
-![Example](https://raw.githubusercontent.com/jaytrairat/init-case/main/assets/demo.gif)
+<!-- ## Example -->
+<!-- ![Example](https://raw.githubusercontent.com/jaytrairat/init-case/main/assets/demo.gif) -->
 
 ## Result
 ```bash
-    F01-66_NEWCASE/
+    F-2566-001/
     ├─ Documents/
-    │   ├─ EV01/
-    │   └─ EV02/
-    ├─ Extracts/
-    │   ├─ EV01/
-    │   └─ EV02/
+    │   ├─ F-2566-001-EV01/
+    │   └─ F-2566-001-EV02/
+    ├─ Images&Extractions/
+    │   ├─ F-2566-001-EV01/
+    │   └─ F-2566-001-EV02/
     ├─ Pictures/
-    │   ├─ EV01/
-    │   └─ EV02/
-    ├─ Videos/
-    │   ├─ EV01/
-    │   └─ EV02/
+    │   ├─ F-2566-001-EV01/
+    │   └─ F-2566-001-EV02/
     ├─ Reports/
-    │   ├─ EV01/
-    │   └─ EV02/
-    └─ CaseFiles/
-        ├─ EV01/
-        └─ EV02/
+    │   ├─ F-2566-001-EV01/
+    │   └─ F-2566-001-EV02/
+    ├─ Request/
+    │   ├─ F-2566-001-EV01/
+    │   └─ F-2566-001-EV02/
+    └─ Videos/
+        ├─ F-2566-001-EV01/
+        └─ F-2566-001-EV02/
 ```
