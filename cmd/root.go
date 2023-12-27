@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	caseName     string
-	evidenceList []string
+	caseName     int
+	year         int
+	evidenceList []int
 )
 
 var rootCmd = &cobra.Command{
@@ -25,22 +26,24 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		currentPath, _ := os.Getwd()
 
-		if caseName == "" {
-			timestamp := time.Now().Format("20060102150405")
-			caseName = fmt.Sprintf("%s_NEWCASE", timestamp)
-		}
-
 		if len(evidenceList) == 0 {
-			evidenceList = []string{"EVIDENCE"}
+			evidenceList = []int{1}
+		}
+		formattedCaseID := fmt.Sprintf("F-%04d-%03d", year, caseName)
+
+		evidenceListFormat := []string{}
+		for _, evidenceNumber := range evidenceList {
+			formattedEvidence := formattedCaseID + "-" + fmt.Sprintf("EV%03d", evidenceNumber)
+			evidenceListFormat = append(evidenceListFormat, formattedEvidence)
 		}
 
-		createFolder(currentPath, caseName, evidenceList)
-		fmt.Println("Successfully created case (" + caseName + ") folder with evidence (" + strings.Join(evidenceList, ", ") + ") and sub-folders.")
+		createFolder(currentPath, formattedCaseID, evidenceListFormat)
+		fmt.Println("Successfully created case (" + formattedCaseID + ") folder with evidence (" + strings.Join(evidenceListFormat, ", ") + ") and sub-folders.")
 	},
 }
 
 func createFolder(basePath string, caseName string, evidenceList []string) error {
-	evidenceStructure := []string{"Documents", "Extracts", "Pictures", "Videos", "Reports", "CaseFiles"}
+	evidenceStructure := []string{"Documents", "Images&Extractions", "Pictures", "Reports", "Request", "Videos"}
 	casePath := filepath.Join(basePath, caseName)
 
 	os.MkdirAll(casePath, 0755)
@@ -63,6 +66,10 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&caseName, "case", "c", "", "Name of the case :: F01-66")
-	rootCmd.Flags().StringSliceVarP(&evidenceList, "evidence", "e", []string{}, "List of evidence :: EV01 EV02")
+	rootCmd.Flags().IntVarP(&caseName, "case", "c", 1, "Name of the case :: 1")
+	rootCmd.Flags().IntVarP(&year, "year", "y", time.Now().Year(), "Year :: YYYY")
+	rootCmd.Flags().IntSliceVarP(&evidenceList, "evidence", "e", []int{}, "List of evidence number :: 1 2")
+
+	rootCmd.MarkFlagRequired("case")
+	rootCmd.MarkFlagRequired("year")
 }
