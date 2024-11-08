@@ -17,6 +17,7 @@ var (
 	caseName         int
 	year             int
 	numberOfEvidence int
+	isLocal          bool
 )
 
 var rootCmd = &cobra.Command{
@@ -41,15 +42,27 @@ var rootCmd = &cobra.Command{
 }
 
 func createFolder(basePath string, caseName string, evidenceList []string) error {
-	evidenceStructure := []string{"Documents", "Images&Extractions", "Pictures", "Reports", "Request", "Videos"}
+	remoteEvidenceStructure := []string{"Documents", "Images&Extractions", "Pictures", "Reports", "Request", "Videos"}
+	localEvidenceStructure := []string{"Images&Extractions", "Readers", "Exports"}
 	casePath := filepath.Join(basePath, caseName)
 
 	os.MkdirAll(casePath, 0755)
-	for _, dir := range evidenceStructure {
-		structureFolder := filepath.Join(casePath, dir)
-		os.MkdirAll(structureFolder, 0755)
-		for _, subDir := range evidenceList {
-			os.MkdirAll(filepath.Join(structureFolder, subDir), 0755)
+	if isLocal {
+		for _, dir := range evidenceList {
+			structureFolder := filepath.Join(casePath, dir)
+			os.MkdirAll(structureFolder, 0755)
+			for _, subDir := range localEvidenceStructure {
+				os.MkdirAll(filepath.Join(structureFolder, subDir), 0755)
+			}
+		}
+	} else {
+		for _, dir := range remoteEvidenceStructure {
+			structureFolder := filepath.Join(casePath, dir)
+			os.MkdirAll(structureFolder, 0755)
+
+			for _, subDir := range evidenceList {
+				os.MkdirAll(filepath.Join(structureFolder, subDir), 0755)
+			}
 		}
 	}
 	return nil
@@ -66,5 +79,6 @@ func Execute() {
 func init() {
 	rootCmd.Flags().IntVarP(&caseName, "case", "c", 1, "Name of the case :: 1")
 	rootCmd.Flags().IntVarP(&year, "year", "y", time.Now().Year(), "Year :: YYYY")
+	rootCmd.Flags().BoolVarP(&isLocal, "localize", "l", false, "create case on local machine")
 	rootCmd.Flags().IntVarP(&numberOfEvidence, "number of evidence", "e", 1, "Number of evidence")
 }
