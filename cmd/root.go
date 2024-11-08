@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	caseName     int
-	year         int
-	evidenceList []int
+	caseName         int
+	year             int
+	numberOfEvidence int
 )
 
 var rootCmd = &cobra.Command{
@@ -26,14 +26,12 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		currentPath, _ := os.Getwd()
 
-		if len(evidenceList) == 0 {
-			evidenceList = []int{1}
-		}
 		formattedCaseID := fmt.Sprintf("F-%04d-%03d", year, caseName)
 
 		evidenceListFormat := []string{}
-		for _, evidenceNumber := range evidenceList {
-			formattedEvidence := formattedCaseID + "-" + fmt.Sprintf("EV%03d", evidenceNumber)
+
+		for currentEvidence := 1; currentEvidence <= numberOfEvidence; currentEvidence++ {
+			formattedEvidence := formattedCaseID + "-" + fmt.Sprintf("EV%03d", currentEvidence)
 			evidenceListFormat = append(evidenceListFormat, formattedEvidence)
 		}
 
@@ -68,8 +66,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().IntVarP(&caseName, "case", "c", 1, "Name of the case :: 1")
 	rootCmd.Flags().IntVarP(&year, "year", "y", time.Now().Year(), "Year :: YYYY")
-	rootCmd.Flags().IntSliceVarP(&evidenceList, "evidence", "e", []int{}, "List of evidence number :: 1 2")
-
-	rootCmd.MarkFlagRequired("case")
-	rootCmd.MarkFlagRequired("year")
+	rootCmd.Flags().IntVarP(&numberOfEvidence, "number of evidence", "e", 1, "Number of evidence")
 }
